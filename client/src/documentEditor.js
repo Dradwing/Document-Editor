@@ -17,13 +17,13 @@ const TOOLBAR_OPTIONS = [
   ["clean"],
 ]
 
-export default function TextEditor() {
+export default function TextEditor(props) {
   const { id: documentId } = useParams()
   const [socket, setSocket] = useState()
   const [quill, setQuill] = useState()
 
   useEffect(() => {
-    const s = io("http://localhost:3001")
+    const s = io(":3001")
     setSocket(s)
 
     return () => {
@@ -39,7 +39,11 @@ export default function TextEditor() {
       quill.enable()
     })
 
-    socket.emit("get-document", documentId)
+    let userId
+    if(props.user)
+    userId = props.user._id; 
+    socket.emit("get-document", { documentId, userId });
+
   }, [socket, quill, documentId])
 
   useEffect(() => {
