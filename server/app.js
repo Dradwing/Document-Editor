@@ -6,15 +6,13 @@ const cors=require("cors")
 const app = express();
 
 const session=require('express-session')
+const path = require("path");
+__dirname = path.resolve();
 
 const passport = require('./authentication').passport; 
 const { isAuthenticated } = require('./authentication'); 
 
-app.use(cors({
-    origin: '/', 
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true, 
-  }));
+app.use(cors({ origin: "*" }));
 
 app.use(session({ secret: process.env.AUTHSECRET, resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
@@ -48,13 +46,20 @@ app.get('/login/success',async(req,res)=>{
         res.status(400).json({message:"Not Authorized"})
     }
 })
-app.use('/', (req, res,next) => {
-    if (req.isAuthenticated()) {
-      return next()
-    } else {
-      res.status(404).message("Unauthorized")
-    }
-  });
+
+if (process.env.NODE_ENV === "development") {
+    app.use(express.static(path.join(__dirname, "/client/build")));
+  
+    app.get("*", (req, res) =>
+      res.sendFile(path.resolve(__dirname, "client", "build", "index.html"))
+    );
+  } else {
+    app.get("/", (req, res) => {
+      res.send("API is running..");
+    });
+  }
+  
+
 const io=require("socket.io")(3001,{
     cors:{
         origin: "*",
