@@ -23,7 +23,7 @@ export default function TextEditor(props) {
   const [quill, setQuill] = useState()
 
   useEffect(() => {
-    const s = io(':3001')
+    const s = io('/',{transports: ['websocket'],})
     setSocket(s)
 
     return () => {
