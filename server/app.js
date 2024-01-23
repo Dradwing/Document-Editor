@@ -60,7 +60,7 @@ if (process.env.NODE_ENV === "development") {
   }
   
 
-const io=require("socket.io")(3001,{
+const io=require("socket.io")(process.env.PORT,{
     cors:{
         origin: "*",
         methods:['GET','POST'],
