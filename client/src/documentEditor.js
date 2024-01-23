@@ -23,7 +23,7 @@ export default function TextEditor(props) {
   const [quill, setQuill] = useState()
 
   useEffect(() => {
-    const s = io(`:${process.env.PORT}`)
+    const s = io(':3001')
     setSocket(s)
 
     return () => {
